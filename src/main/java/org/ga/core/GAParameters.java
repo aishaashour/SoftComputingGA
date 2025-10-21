@@ -2,14 +2,21 @@ package org.ga.core;
 
 
 public class GAParameters {
-    public static final int POPULATION_SIZE = 100;
-    public static final double MUTATION_RATE = 0.01;
-    public static final double CROSSOVER_RATE = 0.7;
-    public static final int TOURNAMENT_SIZE = 5;
-    public static final int MAX_GENERATIONS = 200;
-    public static final int NUM_PARENTS = 2;
+    private final int populationSize;
+    private final double crossoverRate;
+    private final  double mutationRate;
+    private final int generations;
 
-    private GAParameters() {
-        // Prevent instantiation
+    public GAParameters(int populationSize, double crossoverRate, double mutationRate, int generations) {
+        this.populationSize = populationSize;
+        this.crossoverRate = crossoverRate;
+        this.mutationRate = mutationRate;
+        this.generations = generations;
     }
+
+    public int getPopulationSize() { return populationSize; }
+    public double getCrossoverRate() { return crossoverRate; }
+    public double getMutationRate() { return mutationRate; }
+    public int getGenerations() { return generations; }
+
 }

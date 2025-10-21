@@ -1,6 +1,10 @@
 package org.ga.core;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import org.ga.chromosome.Chromosome;
 
 public class Population {
@@ -15,6 +19,6 @@ public class Population {
     }
 
     public void sortByFitness() {
-        Collections.sort(chromosomes);
+        Collections.sort(chromosomes,Comparator.comparingDouble(Chromosome::getFitness));
     }
 }

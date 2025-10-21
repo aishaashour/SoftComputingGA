@@ -1,8 +1,9 @@
 package org.ga.chromosome;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
-public class BinaryChromosome implements Chromosome{
+public class BinaryChromosome extends Chromosome<Object>{
     private final int[] genes;
     private double fitness;
 
@@ -20,12 +21,8 @@ public class BinaryChromosome implements Chromosome{
     }
 
     @Override
-    public Chromosome clone() throws CloneNotSupportedException {
-        try {
-            return (Chromosome) super.clone();
-        } catch (CloneNotSupportedException e) {
-            return new BinaryChromosome(Arrays.copyOf(this.genes, this.genes.length));
-        }
+    public Chromosome clone() {
+        return new BinaryChromosome(Arrays.copyOf(this.genes, this.genes.length));
     }
 
     @Override

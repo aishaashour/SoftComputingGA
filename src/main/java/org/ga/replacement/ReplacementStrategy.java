@@ -2,9 +2,8 @@ package org.ga.replacement;
 
 import java.util.*;
 import org.ga.chromosome.Chromosome;
-import org.ga.core.*;
 
-public interface ReplacementStrategy {
-    Population replace(Population current, List<Chromosome> offspring);
-    void setParameters(GAParameters params);
+public interface ReplacementStrategy<T extends Chromosome> {
+    List<T> replace(List<T> currentPopulation, List<T> offspring);
+   
 }

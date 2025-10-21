@@ -1,92 +1,130 @@
 package org.ga.core;
 
-import java.util.*;
-import org.ga.chromosome.*;
-import org.ga.crossover.*;
-import org.ga.mutation.*;
-import org.ga.replacement.*;
-import org.ga.selection.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
+import java.util.function.Supplier;
 
-public class GeneticAlgorithm {
-    // private final GAParameters params;
-    private final SelectionStrategy selection;
-    private final CrossoverStrategy crossover;
-    private final MutationStrategy mutation;
-    private final ReplacementStrategy replacement;
-    private final FitnessFunction fitnessFunction;
-    private final InfeasibilityHandler infeasibilityHandler;
-    private final Random random;
+import org.ga.chromosome.Chromosome;
+import org.ga.crossover.CrossoverStrategy;
+import org.ga.mutation.MutationStrategy;
+import org.ga.replacement.ReplacementStrategy;
+import org.ga.selection.SelectionStrategy;
 
-    public GeneticAlgorithm(GAParameters params,
-                            SelectionStrategy selection,
-                            CrossoverStrategy crossover,
-                            MutationStrategy mutation,
-                            ReplacementStrategy replacement,
-                            FitnessFunction fitnessFunction,
-                            InfeasibilityHandler infeasibilityHandler) {
-        // this.params = params;
-        this.selection = selection;
-        this.crossover = crossover;
-        this.mutation = mutation;
-        this.replacement = replacement;
+
+public class GeneticAlgorithm <T extends Chromosome> {
+    private final GAParameters params;
+    private final FitnessFunction<T> fitnessFunction;
+    private final SelectionStrategy<T> selectionStrategy;
+    private final CrossoverStrategy<T> crossoverStrategy;
+    private final MutationStrategy<T> mutationStrategy;
+    private final ReplacementStrategy<T> replacementStrategy;
+
+    private List<T> population;
+    private T bestIndividual;
+    private final Random random = new Random();
+
+    public GeneticAlgorithm(
+        GAParameters params,
+        FitnessFunction<T> fitnessFunction,
+        SelectionStrategy<T> selectionStrategy,
+        CrossoverStrategy<T> crossoverStrategy,
+        MutationStrategy<T> mutationStrategy,
+        ReplacementStrategy<T> replacementStrategy
+    ) {
+        this.params = params;
         this.fitnessFunction = fitnessFunction;
-        this.infeasibilityHandler = infeasibilityHandler;
-        this.random = new Random();
+        this.selectionStrategy = selectionStrategy;
+        this.crossoverStrategy = crossoverStrategy;
+        this.mutationStrategy = mutationStrategy;
+        this.replacementStrategy = replacementStrategy;
     }
 
-    public Chromosome run(Population initPopulation){
-        Population population = initPopulation;
+    public void initializePopulation(Supplier<T> ChromosomeSupplier) {
+        population = new ArrayList<>();
+        for (int i = 0; i < params.getPopulationSize(); i++) {
+            T chromosome = ChromosomeSupplier.get();
+            population.add(chromosome);
+        }
+        updateBest();
+    }
+    private void updateBest() {
+        // Track the best individual in the population
+        T genBest = Collections.max(population,Comparator.comparingDouble(Chromosome::getFitness));
+        if (bestIndividual == null || genBest.getFitness() > bestIndividual.getFitness()) {
+            bestIndividual = (T)genBest.clone();
+        }
+    }
 
-        evaulatePopulation(population);
+    public T getBestIndividual() {
+        return bestIndividual;
+    }
 
-        Chromosome bestChromosome = bestOf(population);
-        for (int generation = 0; generation < GAParameters.MAX_GENERATIONS; generation++) {
-            List<Chromosome> offspringList = new ArrayList<>();
+    
 
-            while (offspringList.size() < GAParameters.POPULATION_SIZE) {
-                List<Chromosome> parents = selection.select(population, GAParameters.NUM_PARENTS, random);
-                Chromosome[] offspringArr = crossover.crossover(parents.get(0), parents.get(1), random);
-                List<Chromosome> offspring = new ArrayList<>(Arrays.asList(offspringArr));
 
-                // Chromosome c1 = mutation
-                for (Chromosome child : offspring) {
-                    mutation.mutate(child, GAParameters.MUTATION_RATE);
-                    if(!infeasibilityHandler.isFeasible(child))
-                        child = infeasibilityHandler.repair(child);
-                    // infeasibilityHandler.handle(child);
-                    offspringList.add(child);
-                    if (offspringList.size() >= GAParameters.POPULATION_SIZE) {
+    public void run(Supplier<T> initPopulation) {
+        // step 1: Initialize population
+        // step 2: Evaluate each individual in the population
+        // step 3: Select parents using selection strategy
+        // step 4: Apply crossover to parents to produce offspring
+        // step 5: Apply mutation to offspring
+        // step 6: Replace individuals in the population using replacement strategy to form the new population
+        // step 7: Track the best solution found so far
+        // step 8: Repeat steps 2-6 for a set number of generations or until a termination condition is met
+
+
+        // step 1
+        initializePopulation(initPopulation);
+        
+        for (int gen = 1; gen <= params.getPopulationSize(); gen++){
+            List<T> newPopulation = new ArrayList<>();
+
+            while(newPopulation.size() < params.getPopulationSize()){
+                // step 3
+                T parent1 = selectionStrategy.select(population);
+                T parent2 = selectionStrategy.select(population);
+
+                List<T> offspring;
+
+                // step 4 crossover
+                if(random.nextDouble()< params.getCrossoverRate()){
+                    offspring = crossoverStrategy.crossover(parent1, parent2);
+                } else {
+                    offspring = Arrays.asList((T)parent1.clone(),(T)parent2.clone());
+                }
+                // step 5 mutation
+                for(T child : offspring){
+                    if(random.nextDouble() < params.getMutationRate()){
+                        mutationStrategy.mutate(child);
+                    }
+                    child.setFitness(fitnessFunction.evaluate(child));
+                    newPopulation.add(child);
+                    if(newPopulation.size() >= params.getPopulationSize()){
                         break;
                     }
                 }
             }
-            Population offspringPop = new Population(offspringList);
-            evaulatePopulation(offspringPop);
-            // replacement.replace expects (Population current, List<Chromosome> offspring)
-            population = replacement.replace(population, offspringList);
-            evaulatePopulation(population);
+            // step 6 replacement
+            population = replacementStrategy.replace(population, newPopulation);
+            // step 7 track best
+            updateBest();
 
-            Chromosome currentBest = bestOf(population);
-            if (currentBest.getFitness() > bestChromosome.getFitness()) {
-                try {
-                    bestChromosome = currentBest.clone();
-                } catch (CloneNotSupportedException e) {
-                    // fallback: keep current best as-is
-                }
-            }
-        }
-        return bestChromosome;
-    }
-
-    private void evaulatePopulation(Population population) {
-        for (Chromosome chromosome : population.getChromosomes()) {
-            double fitness = fitnessFunction.evaluate(chromosome);
-            chromosome.setFitness(fitness);
         }
     }
-    private Chromosome bestOf(Population population) {
-        population.sortByFitness();
-        return population.getChromosomes().get(0);
-    }
+
+    // private void evaulatePopulation(Population population) {
+    //     for (Chromosome chromosome : population.getChromosomes()) {
+    //         double fitness = fitnessFunction.evaluate(chromosome);
+    //         chromosome.setFitness(fitness);
+    //     }
+    // }
+    // private Chromosome bestOf(Population population) {
+    //     population.sortByFitness();
+    //     return population.getChromosomes().get(0);
+    // }
     
 }

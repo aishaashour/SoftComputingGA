@@ -1,11 +1,10 @@
 // This file does not contain any Markdown code fence markers.
 package org.ga.chromosome;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
-
-
-public class IntegerChromosome implements Chromosome{
+public class IntegerChromosome extends Chromosome<Integer>{
     private final int[] genes;
     private double fitness;
 
@@ -17,17 +16,14 @@ public class IntegerChromosome implements Chromosome{
         this.genes=genes;
     }
     @Override
-    public List<Object> getGenes(){
-        return Arrays.stream(genes).boxed().map(i -> (Object) i).toList();
+    public List<Integer> getGenes(){
+        return Arrays.stream(genes).boxed().toList();
     }
 
     @Override
-    public Chromosome clone() throws CloneNotSupportedException {
-        try {
-            return (Chromosome) super.clone();
-        } catch (CloneNotSupportedException e) {
-            return new IntegerChromosome(Arrays.copyOf(this.genes, this.genes.length));
-        }
+    public Chromosome<Integer> clone() {
+        return new IntegerChromosome(Arrays.copyOf(this.genes, this.genes.length));
+    
     }
     
 
