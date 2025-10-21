@@ -41,13 +41,9 @@ Randomly generate several valid chromosomes:
 ### 🧠 **Evaluation Function (Fitness Function)**
 The **fitness** of each chromosome is based on total charging time or total waiting time:
 
-\[
-\text{Fitness} = \frac{1}{\text{Total Charging Time}}
-\]
+Fitness = \frac{1}{\text{Total Charging Time}}
 or equivalently,
-\[
-\text{Fitness} = \frac{1}{\text{Total Waiting Time}}
-\]
+Fitness = \frac{1}{\text{Total Waiting Time}}
 
 Higher fitness values correspond to more efficient charging schedules.
 
