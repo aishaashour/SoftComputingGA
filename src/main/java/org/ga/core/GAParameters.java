@@ -7,8 +7,8 @@ public class GAParameters {
     private static final double DEFAULT_CROSSOVER_RATE = 0.9;
     private static final double DEFAULT_MUTATION_RATE = 0.05;
     private static final int DEFAULT_GENERATIONS = 100;
-    private static final int DEFAULT_TOURNAMENT_SIZE = 3;  // optional
-    private static final int DEFAULT_PARENTS_COUNT = 2;    // optional
+    private static final int DEFAULT_TOURNAMENT_SIZE = 3;
+    private static final int DEFAULT_PARENTS_COUNT = 2;
 
     // Instance fields
     private int populationSize;
