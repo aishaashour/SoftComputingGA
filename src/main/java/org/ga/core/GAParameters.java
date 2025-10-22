@@ -6,7 +6,6 @@ public class GAParameters {
     private final double crossoverRate;
     private final  double mutationRate;
     private final int generations;
-
     public GAParameters(int populationSize, double crossoverRate, double mutationRate, int generations) {
         this.populationSize = populationSize;
         this.crossoverRate = crossoverRate;
