@@ -9,19 +9,19 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 import org.ga.chromosome.Chromosome;
-import org.ga.crossover.CrossoverStrategy;
-import org.ga.mutation.MutationStrategy;
-import org.ga.replacement.ReplacementStrategy;
-import org.ga.selection.SelectionStrategy;
+import org.ga.crossover.ICrossoverStrategy;
+import org.ga.mutation.IMutationStrategy;
+import org.ga.replacement.IReplacementStrategy;
+import org.ga.selection.ISelectionStrategy;
 
 
 public class GeneticAlgorithm <T extends Chromosome> {
     private final GAParameters params;
-    private final FitnessFunction<T> fitnessFunction;
-    private final SelectionStrategy<T> selectionStrategy;
-    private final CrossoverStrategy<T> crossoverStrategy;
-    private final MutationStrategy<T> mutationStrategy;
-    private final ReplacementStrategy<T> replacementStrategy;
+    private final IFitnessFunction<T> fitnessFunction;
+    private final ISelectionStrategy<T> selectionStrategy;
+    private final ICrossoverStrategy<T> crossoverStrategy;
+    private final IMutationStrategy<T> mutationStrategy;
+    private final IReplacementStrategy<T> replacementStrategy;
 
     private List<T> population;
     private T bestIndividual;
@@ -29,11 +29,11 @@ public class GeneticAlgorithm <T extends Chromosome> {
 
     public GeneticAlgorithm(
         GAParameters params,
-        FitnessFunction<T> fitnessFunction,
-        SelectionStrategy<T> selectionStrategy,
-        CrossoverStrategy<T> crossoverStrategy,
-        MutationStrategy<T> mutationStrategy,
-        ReplacementStrategy<T> replacementStrategy
+        IFitnessFunction<T> fitnessFunction,
+        ISelectionStrategy<T> selectionStrategy,
+        ICrossoverStrategy<T> crossoverStrategy,
+        IMutationStrategy<T> mutationStrategy,
+        IReplacementStrategy<T> replacementStrategy
     ) {
         this.params = params;
         this.fitnessFunction = fitnessFunction;

@@ -3,7 +3,7 @@ package org.ga.selection;
 import java.util.*;
 import org.ga.chromosome.*;
 
-public class TournamentSelection<T extends Chromosome> implements SelectionStrategy<T>{
+public class TournamentSelection<T extends Chromosome> implements ISelectionStrategy<T>{
     private final Random random = new Random();
     private final int tournamentSize;
 

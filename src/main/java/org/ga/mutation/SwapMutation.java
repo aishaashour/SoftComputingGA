@@ -2,7 +2,7 @@ package org.ga.mutation;
 import java.util.*;
 import org.ga.chromosome.*;
 
-public class SwapMutation implements MutationStrategy<PermutationChromosome>{
+public class SwapMutation implements IMutationStrategy<PermutationChromosome>{
     private final Random random = new Random();
 
     @Override

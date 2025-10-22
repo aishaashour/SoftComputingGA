@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.ga.chromosome.Chromosome;
 
-public class ElitismReplacement<T extends Chromosome> implements ReplacementStrategy<T>{
+public class ElitismReplacement<T extends Chromosome> implements IReplacementStrategy<T>{
     private final int eliteCount;
 
     public ElitismReplacement(int eliteCount) {
