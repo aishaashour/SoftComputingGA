@@ -8,7 +8,7 @@ import java.util.Random;
 
 import org.ga.chromosome.PermutationChromosome;
 
-public class OrderCrossover implements ICrossoverStrategy<PermutationChromosome>{
+public class OrderCrossover implements ICrossoverStrategy<Integer,PermutationChromosome>{
     private final Random random = new Random();
 
     @Override

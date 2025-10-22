@@ -5,17 +5,17 @@ import java.util.Random;
 
 import org.ga.chromosome.IntegerChromosome;
 
-public class SinglePointCrossover implements ICrossoverStrategy<IntegerChromosome> {
+public class SinglePointCrossover implements ICrossoverStrategy<Integer,IntegerChromosome> {
     private final Random random = new Random();
-    private IntegerChromosome offspring1;
-    private IntegerChromosome offspring2;
-    
+
     @Override
     public List<IntegerChromosome> crossover(IntegerChromosome parent1, IntegerChromosome parent2) {
-        int sz=parent1.getGenes().size();
-        int crossoverPoint = random.nextInt(sz);
-        offspring1 = new IntegerChromosome(sz);
-        offspring2 = new IntegerChromosome(sz);
+        int sz = parent1.getGenes().size();
+        int crossoverPoint = 1 + random.nextInt(sz - 1); 
+
+        IntegerChromosome offspring1 = new IntegerChromosome(sz);
+        IntegerChromosome offspring2 = new IntegerChromosome(sz);
+
         for (int i = 0; i < sz; i++) {
             if (i < crossoverPoint) {
                 offspring1.getGenes().set(i, parent1.getGenes().get(i));
@@ -26,10 +26,6 @@ public class SinglePointCrossover implements ICrossoverStrategy<IntegerChromosom
             }
         }
 
-
-
-       
-       return List.of(offspring1, offspring2);
+        return List.of(offspring1, offspring2);
     }
-    
 }

@@ -3,7 +3,7 @@ package org.ga.selection;
 import java.util.*;
 import org.ga.chromosome.*;
 
-public class TournamentSelection<T extends Chromosome> implements ISelectionStrategy<T>{
+public class TournamentSelection<TGene,TChromosome extends Chromosome<TGene>> implements ISelectionStrategy<TGene,TChromosome>{
     private final Random random = new Random();
     private final int tournamentSize;
 
@@ -12,11 +12,11 @@ public class TournamentSelection<T extends Chromosome> implements ISelectionStra
     }
 
     @Override
-    public T select(List<T> population) {
-        List<T> tournament = new ArrayList<>();
+    public TChromosome select(List<TChromosome> population) {
+        List<TChromosome> tournament = new ArrayList<>();
         for (int i=0;i<tournamentSize;i++){
             // Randomly select an individual
-            T individual = population.get(random.nextInt(population.size()));
+            TChromosome individual = population.get(random.nextInt(population.size()));
             tournament.add(individual);
         }
         // Return the best individual from the tournament

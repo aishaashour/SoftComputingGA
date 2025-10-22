@@ -3,25 +3,25 @@ package org.ga.chromosome;
 import java.util.Arrays;
 import java.util.List;
 
-public class BinaryChromosome extends Chromosome<Object>{
-    private final int[] genes;
+public class BinaryChromosome extends Chromosome<Boolean>{
+    private final Boolean[] genes;
     private double fitness;
 
     public BinaryChromosome(int length){
-        this.genes=new int[length];
+        this.genes=new Boolean[length];
     }
 
-    public BinaryChromosome(int[] genes){
+    public BinaryChromosome(Boolean[] genes){
         this.genes=genes;
     }
 
     @Override
-    public List<Object> getGenes(){
-        return Arrays.stream(genes).boxed().map(i -> (Object) i).toList();
+    public List<Boolean> getGenes(){
+        return Arrays.stream(genes).toList();
     }
 
     @Override
-    public Chromosome clone() {
+    public BinaryChromosome clone() {
         return new BinaryChromosome(Arrays.copyOf(this.genes, this.genes.length));
     }
 
@@ -29,10 +29,7 @@ public class BinaryChromosome extends Chromosome<Object>{
     public void setFitness(double fitness) {
         this.fitness = fitness;
     }
-    // @Override
-    public void getFitness(double fitness) {
-        // deprecated signature - no-op
-    }
+   
 
     @Override
     public double getFitness() {
@@ -40,7 +37,7 @@ public class BinaryChromosome extends Chromosome<Object>{
     }
 
     @Override
-    public int compareTo(Chromosome o) {
+    public int compareTo(Chromosome<Boolean> o) {
         return Double.compare(this.getFitness(), o.getFitness());
     }
 

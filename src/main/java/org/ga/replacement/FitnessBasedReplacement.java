@@ -5,13 +5,13 @@ import java.util.List;
 
 import org.ga.chromosome.Chromosome;
 
-public class FitnessBasedReplacement<T extends Chromosome<?>>  implements IReplacementStrategy<T> {
+public class FitnessBasedReplacement<TGene,TChromosome extends Chromosome<TGene>>  implements IReplacementStrategy<TGene,TChromosome> {
    
 
     @Override
-    public List<T> replace(List<T> currentPopulation, List<T> offspring) {
+    public List<TChromosome> replace(List<TChromosome> currentPopulation, List<TChromosome> offspring) {
         int sz = currentPopulation.size();
-         List<T> combined = new ArrayList<>(currentPopulation);
+         List<TChromosome> combined = new ArrayList<>(currentPopulation);
         combined.addAll(offspring);
 
         combined.sort((c1, c2) -> Double.compare(c2.getFitness(), c1.getFitness()));

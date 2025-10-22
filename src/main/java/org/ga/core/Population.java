@@ -7,14 +7,14 @@ import java.util.List;
 
 import org.ga.chromosome.Chromosome;
 
-public class Population<T> {
-    private final  List<Chromosome<T>> chromosomes;
+public class Population<TGene> {
+    private final  List<Chromosome<TGene>> chromosomes;
 
-    public Population(List<Chromosome<T>> chromosomes) {
+    public Population(List<Chromosome<TGene>> chromosomes) {
         this.chromosomes = new ArrayList<>(chromosomes);
     }
 
-    public List<Chromosome<T>> getChromosomes() {
+    public List<Chromosome<TGene>> getChromosomes() {
         return chromosomes;
     }
 

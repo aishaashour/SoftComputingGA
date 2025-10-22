@@ -3,7 +3,7 @@ package org.ga.replacement;
 import java.util.*;
 import org.ga.chromosome.Chromosome;
 
-public interface IReplacementStrategy<T extends Chromosome> {
-    List<T> replace(List<T> currentPopulation, List<T> offspring);
+public interface IReplacementStrategy<TGene,TChromosome extends Chromosome<TGene>> {
+    List<TChromosome> replace(List<TChromosome> currentPopulation, List<TChromosome> offspring);
    
 }

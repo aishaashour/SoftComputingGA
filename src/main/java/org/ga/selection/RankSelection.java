@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Random;
 import org.ga.chromosome.Chromosome;
 
-public class RankSelection<T extends Chromosome<?>> implements ISelectionStrategy<T> {
+public class RankSelection<TGene,TChromosome extends Chromosome<TGene>> implements ISelectionStrategy<TGene,TChromosome> {
     private final Random random = new Random();
 
     @Override
-    public T select(List<T> population) {
+    public TChromosome select(List<TChromosome> population) {
        
         population.sort((c1, c2) -> Double.compare(c2.getFitness(), c1.getFitness()));
 
@@ -27,11 +27,11 @@ public class RankSelection<T extends Chromosome<?>> implements ISelectionStrateg
         double r = random.nextDouble();
         for (int i = 0; i < n; i++) {
             if (r <= cumulative[i]) {
-                return (T) population.get(i).clone();
+                return (TChromosome) population.get(i).clone();
             }
         }
 
         
-        return (T) population.get(0).clone();
+        return (TChromosome) population.get(0).clone();
     }
 }

@@ -1,39 +1,41 @@
 // This file does not contain any Markdown code fence markers.
 package org.ga.chromosome;
-
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 
 public class IntegerChromosome extends Chromosome<Integer>{
-    private final int[] genes;
+    private final List<Integer>  genes;
     private double fitness;
-
-    public IntegerChromosome(int length){
-        this.genes=new int[length];
+    private final Random random = new Random();
+      public IntegerChromosome(int size) {
+        genes = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            genes.add(random.nextInt(10)) ;
+        }
     }
+   
 
-    public IntegerChromosome(int[] genes){
+    public IntegerChromosome(List<Integer>  genes){
         this.genes=genes;
     }
     @Override
     public List<Integer> getGenes(){
-        return Arrays.stream(genes).boxed().toList();
+        return genes;
     }
 
     @Override
     public Chromosome<Integer> clone() {
-        return new IntegerChromosome(Arrays.copyOf(this.genes, this.genes.length));
-    
+        IntegerChromosome clone = new IntegerChromosome(new ArrayList<>(this.genes));
+        clone.setFitness(this.fitness);
+        return clone;
     }
     
 
     @Override
     public void setFitness(double fitness) {
         this.fitness = fitness;
-    }
-    // @Override
-    public void getFitness(double fitness) {
-        // deprecated signature - no-op
     }
 
     @Override
@@ -42,7 +44,7 @@ public class IntegerChromosome extends Chromosome<Integer>{
     }
 
     @Override
-    public int compareTo(Chromosome o) {
+    public int compareTo(Chromosome<Integer> o) {
         return Double.compare(this.getFitness(), o.getFitness());
     }
 

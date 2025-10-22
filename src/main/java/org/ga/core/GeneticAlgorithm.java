@@ -15,25 +15,25 @@ import org.ga.replacement.IReplacementStrategy;
 import org.ga.selection.ISelectionStrategy;
 
 
-public class GeneticAlgorithm <T extends Chromosome> {
+public class GeneticAlgorithm <TGene,TChromosome extends Chromosome<TGene>> {
     private final GAParameters params;
-    private final IFitnessFunction<T> fitnessFunction;
-    private final ISelectionStrategy<T> selectionStrategy;
-    private final ICrossoverStrategy<T> crossoverStrategy;
-    private final IMutationStrategy<T> mutationStrategy;
-    private final IReplacementStrategy<T> replacementStrategy;
+    private final IFitnessFunction<TGene,TChromosome> fitnessFunction;
+    private final ISelectionStrategy<TGene,TChromosome> selectionStrategy;
+    private final ICrossoverStrategy<TGene,TChromosome> crossoverStrategy;
+    private final IMutationStrategy<TGene,TChromosome> mutationStrategy;
+    private final IReplacementStrategy<TGene,TChromosome> replacementStrategy;
 
-    private List<T> population;
-    private T bestIndividual;
+    private List<TChromosome> population;
+    private TChromosome bestIndividual;
     private final Random random = new Random();
 
     public GeneticAlgorithm(
         GAParameters params,
-        IFitnessFunction<T> fitnessFunction,
-        ISelectionStrategy<T> selectionStrategy,
-        ICrossoverStrategy<T> crossoverStrategy,
-        IMutationStrategy<T> mutationStrategy,
-        IReplacementStrategy<T> replacementStrategy
+        IFitnessFunction<TGene,TChromosome> fitnessFunction,
+        ISelectionStrategy<TGene,TChromosome> selectionStrategy,
+        ICrossoverStrategy<TGene,TChromosome> crossoverStrategy,
+        IMutationStrategy<TGene,TChromosome> mutationStrategy,
+        IReplacementStrategy<TGene,TChromosome> replacementStrategy
     ) {
         this.params = params;
         this.fitnessFunction = fitnessFunction;
@@ -43,30 +43,30 @@ public class GeneticAlgorithm <T extends Chromosome> {
         this.replacementStrategy = replacementStrategy;
     }
 
-    public void initializePopulation(Supplier<T> ChromosomeSupplier) {
+    public void initializePopulation(Supplier<TChromosome> ChromosomeSupplier) {
         population = new ArrayList<>();
         for (int i = 0; i < params.getPopulationSize(); i++) {
-            T chromosome = ChromosomeSupplier.get();
+            TChromosome chromosome = ChromosomeSupplier.get();
             population.add(chromosome);
         }
         updateBest();
     }
     private void updateBest() {
         // Track the best individual in the population
-        T genBest = Collections.max(population,Comparator.comparingDouble(Chromosome::getFitness));
+        TChromosome genBest = Collections.max(population,Comparator.comparingDouble(Chromosome::getFitness));
         if (bestIndividual == null || genBest.getFitness() > bestIndividual.getFitness()) {
-            bestIndividual = (T)genBest.clone();
+            bestIndividual = (TChromosome)genBest.clone();
         }
     }
 
-    public T getBestIndividual() {
+    public TChromosome getBestIndividual() {
         return bestIndividual;
     }
 
     
 
 
-    public void run(Supplier<T> initPopulation) {
+    public void run(Supplier<TChromosome> initPopulation) {
         // step 1: Initialize population
         // step 2: Evaluate each individual in the population
         // step 3: Select parents using selection strategy
@@ -81,23 +81,23 @@ public class GeneticAlgorithm <T extends Chromosome> {
         initializePopulation(initPopulation);
         
         for (int gen = 1; gen <= params.getPopulationSize(); gen++){
-            List<T> newPopulation = new ArrayList<>();
+            List<TChromosome> newPopulation = new ArrayList<>();
 
             while(newPopulation.size() < params.getPopulationSize()){
                 // step 3
-                T parent1 = selectionStrategy.select(population);
-                T parent2 = selectionStrategy.select(population);
+                TChromosome parent1 = selectionStrategy.select(population);
+                TChromosome parent2 = selectionStrategy.select(population);
 
-                List<T> offspring;
+                List<TChromosome> offspring;
 
                 // step 4 crossover
                 if(random.nextDouble()< params.getCrossoverRate()){
                     offspring = crossoverStrategy.crossover(parent1, parent2);
                 } else {
-                    offspring = Arrays.asList((T)parent1.clone(),(T)parent2.clone());
+                    offspring = Arrays.asList((TChromosome)parent1.clone(),(TChromosome)parent2.clone());
                 }
                 // step 5 mutation
-                for(T child : offspring){
+                for(TChromosome child : offspring){
                     if(random.nextDouble() < params.getMutationRate()){
                         mutationStrategy.mutate(child);
                     }

@@ -39,14 +39,14 @@ public class PermutationChromosome extends Chromosome<Integer>{
 
 
     @Override 
-    public Chromosome clone(){
-        PermutationChromosome clone = new PermutationChromosome(this.genes);
+    public PermutationChromosome clone(){
+        PermutationChromosome clone = new PermutationChromosome(new ArrayList<>(this.genes));
         clone.setFitness(this.fitness);
         return clone;
     }
 
      @Override
-    public int compareTo(Chromosome o) {
+    public int compareTo(Chromosome<Integer> o) {
         return Double.compare(this.getFitness(), o.getFitness());
     }
 }
