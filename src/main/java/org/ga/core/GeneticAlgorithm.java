@@ -22,18 +22,20 @@ public class GeneticAlgorithm <TGene,TChromosome extends Chromosome<TGene>> {
     private final ICrossoverStrategy<TGene,TChromosome> crossoverStrategy;
     private final IMutationStrategy<TGene,TChromosome> mutationStrategy;
     private final IReplacementStrategy<TGene,TChromosome> replacementStrategy;
+    private final IFeasibilityHandler<TGene, TChromosome> feasibilityHandler;
 
     private List<TChromosome> population;
     private TChromosome bestIndividual;
     private final Random random = new Random();
 
     public GeneticAlgorithm(
-        GAParameters params,
-        IFitnessFunction<TGene,TChromosome> fitnessFunction,
-        ISelectionStrategy<TGene,TChromosome> selectionStrategy,
-        ICrossoverStrategy<TGene,TChromosome> crossoverStrategy,
-        IMutationStrategy<TGene,TChromosome> mutationStrategy,
-        IReplacementStrategy<TGene,TChromosome> replacementStrategy
+            GAParameters params,
+            IFitnessFunction<TGene,TChromosome> fitnessFunction,
+            ISelectionStrategy<TGene,TChromosome> selectionStrategy,
+            ICrossoverStrategy<TGene,TChromosome> crossoverStrategy,
+            IMutationStrategy<TGene,TChromosome> mutationStrategy,
+            IReplacementStrategy<TGene,TChromosome> replacementStrategy,
+            IFeasibilityHandler<TGene, TChromosome> feasibilityHandler
     ) {
         this.params = params;
         this.fitnessFunction = fitnessFunction;
@@ -41,11 +43,12 @@ public class GeneticAlgorithm <TGene,TChromosome extends Chromosome<TGene>> {
         this.crossoverStrategy = crossoverStrategy;
         this.mutationStrategy = mutationStrategy;
         this.replacementStrategy = replacementStrategy;
+        this.feasibilityHandler = feasibilityHandler;
     }
 
     public void initializePopulation(Supplier<TChromosome> ChromosomeSupplier) {
         population = new ArrayList<>();
-        for (int i = 0; i < params.getPopulationSize(); i++) {
+        for (int i = 0; i < params.getGenerations(); i++) {
             TChromosome chromosome = ChromosomeSupplier.get();
             population.add(chromosome);
         }
@@ -79,8 +82,12 @@ public class GeneticAlgorithm <TGene,TChromosome extends Chromosome<TGene>> {
 
         // step 1
         initializePopulation(initPopulation);
+        for (TChromosome chromosome : population) {
+            chromosome.setFitness(fitnessFunction.evaluate(chromosome));
+        }
+        updateBest();
         
-        for (int gen = 1; gen <= params.getPopulationSize(); gen++){
+        for (int gen = 1; gen <= params.getGenerations(); gen++){
             List<TChromosome> newPopulation = new ArrayList<>();
 
             while(newPopulation.size() < params.getPopulationSize()){
@@ -94,12 +101,17 @@ public class GeneticAlgorithm <TGene,TChromosome extends Chromosome<TGene>> {
                 if(random.nextDouble()< params.getCrossoverRate()){
                     offspring = crossoverStrategy.crossover(parent1, parent2);
                 } else {
-                    offspring = Arrays.asList((TChromosome)parent1.clone(),(TChromosome)parent2.clone());
+                    offspring = Arrays.asList(
+                            (TChromosome)parent1.clone(),
+                            (TChromosome)parent2.clone());
                 }
                 // step 5 mutation
                 for(TChromosome child : offspring){
                     if(random.nextDouble() < params.getMutationRate()){
                         mutationStrategy.mutate(child);
+                    }
+                    if (feasibilityHandler != null && !feasibilityHandler.isFeasible(child)) {
+                        child = feasibilityHandler.repair(child);
                     }
                     child.setFitness(fitnessFunction.evaluate(child));
                     newPopulation.add(child);
@@ -113,6 +125,7 @@ public class GeneticAlgorithm <TGene,TChromosome extends Chromosome<TGene>> {
             // step 7 track best
             updateBest();
 
+            System.out.println("Generation " + gen + " | Best Fitness: " + bestIndividual.getFitness());
         }
     }
 
