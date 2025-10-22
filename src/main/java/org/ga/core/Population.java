@@ -11,14 +11,17 @@ public class Population<TGene> {
     private final  List<Chromosome<TGene>> chromosomes;
 
     public Population(List<Chromosome<TGene>> chromosomes) {
+
         this.chromosomes = new ArrayList<>(chromosomes);
     }
 
     public List<Chromosome<TGene>> getChromosomes() {
+
         return chromosomes;
     }
 
     public void sortByFitness() {
-        Collections.sort(chromosomes,Comparator.comparingDouble(Chromosome::getFitness));
+        Collections.sort(
+                chromosomes,Comparator.comparingDouble(Chromosome::getFitness));
     }
 }
