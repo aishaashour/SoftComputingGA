@@ -18,21 +18,20 @@ public class EVChargingFitness implements IFitnessFunction<Integer, PermutationC
         double totalWait = 0.0;
         double elapsed = 0.0;
 
-        // ✅ Quiet safety check — avoids crashes and console spam
         for (int car : order) {
             if (car < 0 || car >= carDurations.length) {
-                // Invalid gene → return very poor fitness
+                //invalid gene
                 return 0.0;
             }
         }
 
-        // ✅ Calculate total waiting time
+        //total waiting time
         for (int car : order) {
             totalWait += elapsed;
             elapsed += carDurations[car];
         }
 
-        // ✅ Fitness: higher = better (lower total wait)
+        //Fitness: higher = better (lower total wait)
         return 1.0 / (1.0 + totalWait);
     }
 }

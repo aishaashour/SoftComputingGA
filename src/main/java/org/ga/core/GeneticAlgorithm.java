@@ -92,8 +92,7 @@ public class GeneticAlgorithm <TGene,TChromosome extends Chromosome<TGene>> {
                 offspring = crossoverStrategy.crossover(parent1, parent2);
             } else {
                 offspring = Arrays.asList(
-                        (TChromosome) parent1.clone(),
-                        (TChromosome) parent2.clone()
+                        (TChromosome) parent1.clone(),(TChromosome) parent2.clone()
                 );
             }
 
@@ -115,7 +114,7 @@ public class GeneticAlgorithm <TGene,TChromosome extends Chromosome<TGene>> {
         population = replacementStrategy.replace(population, newPopulation);
         updateBest();
 
-        // ✅ Print only when fitness improves
+        // Print only when fitness improves
         double bestFitness = bestIndividual.getFitness();
         if (gen == 1 || bestFitness > prevBestFitness) {
             System.out.println("Generation " + gen + " | Best Fitness: " + bestFitness);
@@ -123,17 +122,5 @@ public class GeneticAlgorithm <TGene,TChromosome extends Chromosome<TGene>> {
         }
     }
 }
-
-
-    // private void evaulatePopulation(Population population) {
-    //     for (Chromosome chromosome : population.getChromosomes()) {
-    //         double fitness = fitnessFunction.evaluate(chromosome);
-    //         chromosome.setFitness(fitness);
-    //     }
-    // }
-    // private Chromosome bestOf(Population population) {
-    //     population.sortByFitness();
-    //     return population.getChromosomes().get(0);
-    // }
     
 }

@@ -1,5 +1,4 @@
 package org.case_study;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +20,7 @@ import org.ga.selection.TournamentSelection;
 
 public class EVChargingMain {
     public static void main(String[] args) {
-    double[] carDurations = {5.0, 1.5, 7.2, 3.0, 4.5, 2.8, 6.0, 1.2, 3.8, 2.0};
+    double[] carDurations = {5.0, 1.5, 7.2, 3.0 , 4.5 , 2.8 , 6.0 , 1.2 , 3.8, 2.0};
     int numCars = carDurations.length;
 
     // Define GA components
@@ -29,11 +28,11 @@ public class EVChargingMain {
     IFeasibilityHandler<Integer, PermutationChromosome> feasibility = new EVFeasibilityHandler(numCars);
 
     GAParameters params = new GAParameters();
-    params.setGenerations(100);
     params.setPopulationSize(100);
-    params.setMutationRate(0.3);
+    params.setGenerations(100); 
     params.setCrossoverRate(0.8);
-
+    params.setMutationRate(0.3);
+ 
 
     ISelectionStrategy<Integer, PermutationChromosome> selection = new TournamentSelection<>(3);
     ICrossoverStrategy<Integer, PermutationChromosome> crossover = new OrderCrossover();
@@ -54,7 +53,7 @@ public class EVChargingMain {
     // Run GA
     ga.run(initPopulation);
 
-    // Show best solution
+    //best solution
     PermutationChromosome best = ga.getBestIndividual();
     System.out.println("Best order of cars: " + best.getGenes());
     System.out.println("Best fitness (higher): " + best.getFitness());

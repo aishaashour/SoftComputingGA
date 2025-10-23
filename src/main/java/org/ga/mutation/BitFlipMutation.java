@@ -2,8 +2,8 @@ package org.ga.mutation;
 
 import java.util.List;
 import java.util.Random;
+
 import org.ga.chromosome.BinaryChromosome;
-import org.ga.chromosome.Chromosome;
 
 public class BitFlipMutation implements IMutationStrategy<Boolean, BinaryChromosome> {
     private final Random random = new Random();
