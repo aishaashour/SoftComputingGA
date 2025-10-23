@@ -1,56 +1,62 @@
 package org.case_study;
 
-import org.ga.core.*;
-import org.ga.chromosome.*;
-import org.ga.selection.*;
-import org.ga.crossover.*;
-import org.ga.mutation.*;
-import org.ga.replacement.*;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Supplier;
+
+import org.ga.chromosome.PermutationChromosome;
+import org.ga.core.GAParameters;
+import org.ga.core.GeneticAlgorithm;
+import org.ga.core.IFeasibilityHandler;
+import org.ga.core.IFitnessFunction;
+import org.ga.crossover.ICrossoverStrategy;
+import org.ga.crossover.OrderCrossover;
+import org.ga.mutation.IMutationStrategy;
+import org.ga.mutation.SwapMutation;
+import org.ga.replacement.ElitismReplacement;
+import org.ga.replacement.IReplacementStrategy;
+import org.ga.selection.ISelectionStrategy;
+import org.ga.selection.TournamentSelection;
 
 public class EVChargingMain {
     public static void main(String[] args) {
-        // Example: 6 cars, one charging slot
-        double[] carDurations = {2.5, 3.0, 1.2, 4.0, 2.8, 1.5};
-        int numCars = carDurations.length;
+    double[] carDurations = {5.0, 1.5, 7.2, 3.0, 4.5, 2.8, 6.0, 1.2, 3.8, 2.0};
+    int numCars = carDurations.length;
 
-        // 1️⃣ Create fitness and feasibility handler
-        IFitnessFunction<Integer, PermutationChromosome> fitness = new EVChargingFitness(carDurations);
-        IFeasibilityHandler<Integer, PermutationChromosome> feasibility = new EVFeasibilityHandler(numCars);
+    // Define GA components
+    IFitnessFunction<Integer, PermutationChromosome> fitness = new EVChargingFitness(carDurations);
+    IFeasibilityHandler<Integer, PermutationChromosome> feasibility = new EVFeasibilityHandler(numCars);
 
-        // 2️⃣ Configure GA parameters
-        GAParameters params = new GAParameters();
-        params.setPopulationSize(50);
-        params.setGenerations(100);
-        params.setCrossoverRate(0.7);
-        params.setMutationRate(0.1);
+    GAParameters params = new GAParameters();
+    params.setGenerations(100);
+    params.setPopulationSize(100);
+    params.setMutationRate(0.3);
+    params.setCrossoverRate(0.8);
 
-        // 3️⃣ Define GA strategies
-        ISelectionStrategy<Integer, PermutationChromosome> selection = new TournamentSelection<>(3);
-        ICrossoverStrategy<Integer, PermutationChromosome> crossover = new OrderCrossover();
-        IMutationStrategy<Integer, PermutationChromosome> mutation = new SwapMutation();
-        IReplacementStrategy<Integer, PermutationChromosome> replacement = new ElitismReplacement<>(2); // e.g. top 2 elites
 
-        // 4️⃣ Instantiate the GA
-        GeneticAlgorithm<Integer, PermutationChromosome> ga =
-                new GeneticAlgorithm<>(params, fitness, selection, crossover, mutation, replacement, feasibility);
+    ISelectionStrategy<Integer, PermutationChromosome> selection = new TournamentSelection<>(3);
+    ICrossoverStrategy<Integer, PermutationChromosome> crossover = new OrderCrossover();
+    IMutationStrategy<Integer, PermutationChromosome> mutation = new SwapMutation();
+    IReplacementStrategy<Integer, PermutationChromosome> replacement = new ElitismReplacement<>(1);
 
-        // ✅ 5️⃣ Define how to initialize chromosomes
-        Supplier<PermutationChromosome> initPopulation = () -> {
-            List<Integer> genes = new ArrayList<>();
-            for (int i = 0; i < numCars; i++) genes.add(i);
-            Collections.shuffle(genes);
-            return new PermutationChromosome(genes);
-        };
+    GeneticAlgorithm<Integer, PermutationChromosome> ga =
+            new GeneticAlgorithm<>(params, fitness, selection, crossover, mutation, replacement, feasibility);
 
-        // ✅ 6️⃣ Run the GA with the initialization supplier
-        ga.run(initPopulation);
+    // Initialize random population
+    Supplier<PermutationChromosome> initPopulation = () -> {
+        List<Integer> genes = new ArrayList<>();
+        for (int i = 0; i < numCars; i++) genes.add(i);
+        Collections.shuffle(genes);
+        return new PermutationChromosome(genes);
+    };
 
-        // 7️⃣ Display best result
-        PermutationChromosome best = ga.getBestIndividual();
-        System.out.println("Best order of cars: " + best.getGenes());
-        System.out.println("Best fitness (lower = better): " + best.getFitness());
-    }
+    // Run GA
+    ga.run(initPopulation);
+
+    // Show best solution
+    PermutationChromosome best = ga.getBestIndividual();
+    System.out.println("Best order of cars: " + best.getGenes());
+    System.out.println("Best fitness (higher): " + best.getFitness());
+}
 }

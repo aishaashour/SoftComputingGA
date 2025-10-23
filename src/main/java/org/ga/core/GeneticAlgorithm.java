@@ -48,7 +48,8 @@ public class GeneticAlgorithm <TGene,TChromosome extends Chromosome<TGene>> {
 
     public void initializePopulation(Supplier<TChromosome> ChromosomeSupplier) {
         population = new ArrayList<>();
-        for (int i = 0; i < params.getGenerations(); i++) {
+        for (int i = 0; i < params.getPopulationSize(); i++) {
+
             TChromosome chromosome = ChromosomeSupplier.get();
             population.add(chromosome);
         }
@@ -70,64 +71,59 @@ public class GeneticAlgorithm <TGene,TChromosome extends Chromosome<TGene>> {
 
 
     public void run(Supplier<TChromosome> initPopulation) {
-        // step 1: Initialize population
-        // step 2: Evaluate each individual in the population
-        // step 3: Select parents using selection strategy
-        // step 4: Apply crossover to parents to produce offspring
-        // step 5: Apply mutation to offspring
-        // step 6: Replace individuals in the population using replacement strategy to form the new population
-        // step 7: Track the best solution found so far
-        // step 8: Repeat steps 2-6 for a set number of generations or until a termination condition is met
+    initializePopulation(initPopulation);
+    for (TChromosome chromosome : population) {
+        chromosome.setFitness(fitnessFunction.evaluate(chromosome));
+    }
+    updateBest();
 
+    double prevBestFitness = bestIndividual.getFitness();
 
-        // step 1
-        initializePopulation(initPopulation);
-        for (TChromosome chromosome : population) {
-            chromosome.setFitness(fitnessFunction.evaluate(chromosome));
-        }
-        updateBest();
-        
-        for (int gen = 1; gen <= params.getGenerations(); gen++){
-            List<TChromosome> newPopulation = new ArrayList<>();
+    for (int gen = 1; gen <= params.getGenerations(); gen++) {
+        List<TChromosome> newPopulation = new ArrayList<>();
 
-            while(newPopulation.size() < params.getPopulationSize()){
-                // step 3
-                TChromosome parent1 = selectionStrategy.select(population);
-                TChromosome parent2 = selectionStrategy.select(population);
+        while (newPopulation.size() < params.getPopulationSize()) {
+            TChromosome parent1 = selectionStrategy.select(population);
+            TChromosome parent2 = selectionStrategy.select(population);
 
-                List<TChromosome> offspring;
+            List<TChromosome> offspring;
 
-                // step 4 crossover
-                if(random.nextDouble()< params.getCrossoverRate()){
-                    offspring = crossoverStrategy.crossover(parent1, parent2);
-                } else {
-                    offspring = Arrays.asList(
-                            (TChromosome)parent1.clone(),
-                            (TChromosome)parent2.clone());
+            if (random.nextDouble() < params.getCrossoverRate()) {
+                offspring = crossoverStrategy.crossover(parent1, parent2);
+            } else {
+                offspring = Arrays.asList(
+                        (TChromosome) parent1.clone(),
+                        (TChromosome) parent2.clone()
+                );
+            }
+
+            for (TChromosome child : offspring) {
+                if (random.nextDouble() < params.getMutationRate()) {
+                    mutationStrategy.mutate(child);
                 }
-                // step 5 mutation
-                for(TChromosome child : offspring){
-                    if(random.nextDouble() < params.getMutationRate()){
-                        mutationStrategy.mutate(child);
-                    }
-                    if (feasibilityHandler != null && !feasibilityHandler.isFeasible(child)) {
-                        child = feasibilityHandler.repair(child);
-                    }
-                    child.setFitness(fitnessFunction.evaluate(child));
-                    newPopulation.add(child);
-                    if(newPopulation.size() >= params.getPopulationSize()){
-                        break;
-                    }
+                if (feasibilityHandler != null && !feasibilityHandler.isFeasible(child)) {
+                    child = feasibilityHandler.repair(child);
+                }
+                child.setFitness(fitnessFunction.evaluate(child));
+                newPopulation.add(child);
+                if (newPopulation.size() >= params.getPopulationSize()) {
+                    break;
                 }
             }
-            // step 6 replacement
-            population = replacementStrategy.replace(population, newPopulation);
-            // step 7 track best
-            updateBest();
+        }
 
-            System.out.println("Generation " + gen + " | Best Fitness: " + bestIndividual.getFitness());
+        population = replacementStrategy.replace(population, newPopulation);
+        updateBest();
+
+        // ✅ Print only when fitness improves
+        double bestFitness = bestIndividual.getFitness();
+        if (gen == 1 || bestFitness > prevBestFitness) {
+            System.out.println("Generation " + gen + " | Best Fitness: " + bestFitness);
+            prevBestFitness = bestFitness;
         }
     }
+}
+
 
     // private void evaulatePopulation(Population population) {
     //     for (Chromosome chromosome : population.getChromosomes()) {

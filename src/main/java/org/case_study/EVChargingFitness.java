@@ -15,16 +15,24 @@ public class EVChargingFitness implements IFitnessFunction<Integer, PermutationC
     @Override
     public double evaluate(PermutationChromosome chromosome) {
         List<Integer> order = chromosome.getGenes();
-
         double totalWait = 0.0;
         double elapsed = 0.0;
 
+        // ✅ Quiet safety check — avoids crashes and console spam
         for (int car : order) {
-            totalWait += elapsed;          // waiting time for this car
-            elapsed += carDurations[car];  // add its charging time
+            if (car < 0 || car >= carDurations.length) {
+                // Invalid gene → return very poor fitness
+                return 0.0;
+            }
         }
 
-        // Higher fitness for lower total waiting time
+        // ✅ Calculate total waiting time
+        for (int car : order) {
+            totalWait += elapsed;
+            elapsed += carDurations[car];
+        }
+
+        // ✅ Fitness: higher = better (lower total wait)
         return 1.0 / (1.0 + totalWait);
     }
 }
