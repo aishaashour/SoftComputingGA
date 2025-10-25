@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class PermutationChromosome extends Chromosome<Integer>{
-    // 
     private final List<Integer>genes;
     
     public PermutationChromosome(List<Integer> genes) {

@@ -71,7 +71,9 @@ public class GeneticAlgorithm <TGene,TChromosome extends Chromosome<TGene>> {
 
 
     public void run(Supplier<TChromosome> initPopulation) {
+    //1.intialize population
     initializePopulation(initPopulation);
+    //2.evaluate fitness
     for (TChromosome chromosome : population) {
         chromosome.setFitness(fitnessFunction.evaluate(chromosome));
     }
@@ -79,15 +81,18 @@ public class GeneticAlgorithm <TGene,TChromosome extends Chromosome<TGene>> {
 
     double prevBestFitness = bestIndividual.getFitness();
 
+    //3.evolution loop
     for (int gen = 1; gen <= params.getGenerations(); gen++) {
         List<TChromosome> newPopulation = new ArrayList<>();
 
+        //selection
         while (newPopulation.size() < params.getPopulationSize()) {
             TChromosome parent1 = selectionStrategy.select(population);
             TChromosome parent2 = selectionStrategy.select(population);
 
             List<TChromosome> offspring;
 
+            //crossover
             if (random.nextDouble() < params.getCrossoverRate()) {
                 offspring = crossoverStrategy.crossover(parent1, parent2);
             } else {
@@ -96,6 +101,7 @@ public class GeneticAlgorithm <TGene,TChromosome extends Chromosome<TGene>> {
                 );
             }
 
+            //mutation and feasibility check
             for (TChromosome child : offspring) {
                 if (random.nextDouble() < params.getMutationRate()) {
                     mutationStrategy.mutate(child);
@@ -104,17 +110,19 @@ public class GeneticAlgorithm <TGene,TChromosome extends Chromosome<TGene>> {
                     child = feasibilityHandler.repair(child);
                 }
                 child.setFitness(fitnessFunction.evaluate(child));
+                //new generation
                 newPopulation.add(child);
                 if (newPopulation.size() >= params.getPopulationSize()) {
                     break;
                 }
             }
         }
+        //replacement
 
         population = replacementStrategy.replace(population, newPopulation);
         updateBest();
 
-        // Print only when fitness improves
+        // Print only when fitness improves or for the first generation
         double bestFitness = bestIndividual.getFitness();
         if (gen == 1 || bestFitness > prevBestFitness) {
             System.out.println("Generation " + gen + " | Best Fitness: " + bestFitness);

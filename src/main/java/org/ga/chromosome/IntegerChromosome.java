@@ -1,4 +1,3 @@
-// This file does not contain any Markdown code fence markers.
 package org.ga.chromosome;
 import java.util.ArrayList;
 import java.util.List;
