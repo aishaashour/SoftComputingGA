@@ -28,10 +28,10 @@ public class EVChargingMain {
     IFeasibilityHandler<Integer, PermutationChromosome> feasibility = new EVFeasibilityHandler(numCars);
 
     GAParameters params = new GAParameters();
-    params.setPopulationSize(100);
-    params.setGenerations(100); 
-    params.setCrossoverRate(0.8);
-    params.setMutationRate(0.3);
+    params.setPopulationSize(50);
+    params.setGenerations(50); 
+    params.setCrossoverRate(0.7);
+    params.setMutationRate(0.1);
  
 
     ISelectionStrategy<Integer, PermutationChromosome> selection = new TournamentSelection<>(3);
@@ -42,7 +42,7 @@ public class EVChargingMain {
     GeneticAlgorithm<Integer, PermutationChromosome> ga =
             new GeneticAlgorithm<>(params, fitness, selection, crossover, mutation, replacement, feasibility);
 
-    // Initialize random population
+    //Initialize random population
     Supplier<PermutationChromosome> initPopulation = () -> {
         List<Integer> genes = new ArrayList<>();
         for (int i = 0; i < numCars; i++) genes.add(i);
