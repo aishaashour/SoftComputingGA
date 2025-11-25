@@ -1,23 +1,4 @@
 # 🧬 SoftComputingGA  
-### Case Study: Electric Vehicle Charging Optimization
-
----
-
-## 🚗 Problem to Solve
-We have a set of **electric cars**, each requiring a certain **charging time**, and a limited number of **charging slots** available at the station.  
-The goal is to **assign cars to charging slots and order them efficiently** to **minimize total waiting time** and **overall completion (charging) time**.
-
-### **Given**
-- \( n \): Number of electric cars, each with a charging time \( t_i \)  
-- \( m \): Number of charging slots (where \( m < n \))
-
-### **Find**
-An assignment of cars to slots and their order on each slot that minimizes:
-- **Total waiting time**
-- **Total charging completion time (makespan)**
-
----
-
 ## ⚙️ Components of the Genetic Algorithm (GA)
 
 ### 🧩 **Encoding Technique**
