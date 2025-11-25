@@ -1,4 +1,4 @@
-package org.case_study;
+package org.ga.case_study;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
