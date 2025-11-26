@@ -1,10 +1,13 @@
 package org.fuzzyLogic;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.fuzzyLogic.defuzz.Defuzzifier;
 import org.fuzzyLogic.inference.InferenceEngine;
 import org.fuzzyLogic.rules.RuleBase;
-import org.fuzzyLogic.variable.*;
+import org.fuzzyLogic.variable.FuzzySet;
+import org.fuzzyLogic.variable.LinguisticVariable;
 
 public class FuzzySystem {
     private final Map<String, LinguisticVariable> variables = new HashMap<>();
@@ -27,6 +30,10 @@ public class FuzzySystem {
     public RuleBase getRuleBase() {
         return ruleBase;
     }
+    public LinguisticVariable getVariable(String name) {
+    return variables.get(name);
+}
+
 
     public double evaluate(Map<String, Double> inputs) {
         Map<String, Double> fuzzified = new HashMap<>();

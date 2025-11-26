@@ -24,7 +24,4 @@ public class TrapezoidalMF implements MembershipFunction {
         else
             return (d - x) / (d - c);
     }
-    
-
-   
 }

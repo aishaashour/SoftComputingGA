@@ -1,6 +1,6 @@
 package org.fuzzyLogic.variable;
-
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LinguisticVariable {
     private final String name;

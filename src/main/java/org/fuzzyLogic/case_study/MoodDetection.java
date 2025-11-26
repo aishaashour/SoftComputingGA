@@ -1,4 +1,4 @@
-package org.fuzzyLogic.UseCase;
+package org.fuzzyLogic.case_study;
 
 import java.util.Map;
 
@@ -22,21 +22,21 @@ public class MoodDetection {
         pitch.addFuzzySet(new FuzzySet("Low", new TriangularMF(50, 50, 255)));
         pitch.addFuzzySet(new FuzzySet("Medium", new TriangularMF(125, 255, 325)));
         pitch.addFuzzySet(new FuzzySet("High", new TriangularMF(225, 400, 400)));
-        fs.addVariable(pitch, false);
+        fs.addVariable(pitch, false);   //input variable
 
         // Speech Rate (50-200 words)
         LinguisticVariable sr = new LinguisticVariable("SpeechRate", 50, 200);
         sr.addFuzzySet(new FuzzySet("Slow", new TriangularMF(50, 50, 125)));
         sr.addFuzzySet(new FuzzySet("Normal", new TriangularMF(75, 125, 175)));
         sr.addFuzzySet(new FuzzySet("Fast", new TriangularMF(125, 200, 200)));
-        fs.addVariable(sr, false);
+        fs.addVariable(sr, false);   //input variable
 
         // Volume (0-100)
         LinguisticVariable volume = new LinguisticVariable("Volume", 0, 100);
         volume.addFuzzySet(new FuzzySet("Low", new TriangularMF(0, 0, 50)));
         volume.addFuzzySet(new FuzzySet("Medium", new TriangularMF(25, 50, 75)));
         volume.addFuzzySet(new FuzzySet("High", new TriangularMF(50, 100, 100)));
-        fs.addVariable(volume, false);
+        fs.addVariable(volume, false);  //input variable
 
         // ================= OUTPUT VARIABLE ==================
         LinguisticVariable emotionalState = new LinguisticVariable("EmotionalState", 0, 10);
@@ -44,12 +44,12 @@ public class MoodDetection {
         emotionalState.addFuzzySet(new FuzzySet("Calm", new TriangularMF(2, 4, 6)));
         emotionalState.addFuzzySet(new FuzzySet("Happy", new TriangularMF(5, 7, 9)));
         emotionalState.addFuzzySet(new FuzzySet("Angry", new TriangularMF(8, 10, 10)));
-        fs.addVariable(emotionalState, true);
+        fs.addVariable(emotionalState, true);    //output variable
 
         // ================= RULES ==================
         RuleBase rb = fs.getRuleBase();
 
-        rb.addRule(new FuzzyRule(
+        rb.addRule(new FuzzyRule(         //creating rules
                 Map.of(
                         "Pitch", new FuzzyRule.Condition("Pitch", "Low"),
                         "SpeechRate", new FuzzyRule.Condition("SpeechRate", "Slow"),
@@ -73,33 +73,29 @@ public class MoodDetection {
                         "SpeechRate", new FuzzyRule.Condition("SpeechRate", "Normal"),
                         "Volume", new FuzzyRule.Condition("Volume", "Medium")),
                 "Happy"));
-        // ================= ENGINE & DEFUZZIFIER ==================
+        // ================= INFERENCE & DEFUZZIFIER ==================
         fs.setEngine(new MamdaniEngine(new MinAnd()));
         fs.setDefuzzifier(new CentroidDefuzzifier());
 
         return fs;
     }
 
-    public static void main(String[] args) {
+public static void main(String[] args) {
 
         FuzzySystem fs = buildFuzzySystem();
 
        
-        Map<String, Double>[] inputs = new Map[] {
+        Map<String, Double>[] inputs = new Map[] {    //some test inputs
                 Map.of("Pitch", 80.0, "SpeechRate", 60.0, "Volume", 20.0), // Sad
                 Map.of("Pitch", 250.0, "SpeechRate", 130.0, "Volume", 50.0), // Calm
                 Map.of("Pitch", 300.0, "SpeechRate", 130.0, "Volume", 60.0), // Happy
                 Map.of("Pitch", 350.0, "SpeechRate", 180.0, "Volume", 90.0) // Angry
         };
 
-        LinguisticVariable emotionalState = new LinguisticVariable("EmotionalState", 0, 10);
-        emotionalState.addFuzzySet(new FuzzySet("Sad", new TriangularMF(0, 0, 3)));
-        emotionalState.addFuzzySet(new FuzzySet("Calm", new TriangularMF(2, 4, 6)));
-        emotionalState.addFuzzySet(new FuzzySet("Happy", new TriangularMF(5, 7, 9)));
-        emotionalState.addFuzzySet(new FuzzySet("Angry", new TriangularMF(8, 10, 10)));
+        LinguisticVariable emotionalState = fs.getVariable("EmotionalState");    //get output variable
 
         for (Map<String, Double> input : inputs) {
-            double crisp = fs.evaluate(input);
+            double crisp = fs.evaluate(input);   
             String bestLabel = null;
             double bestMu = -1;
             for (var e : emotionalState.getFuzzySets().entrySet()) {
