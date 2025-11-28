@@ -25,7 +25,7 @@ public class LinguisticVariable {
         return name;
     }
 
-    public double clamp(double x) {
+    public double Limit(double x) {
         return Math.max(min, Math.min(max, x));
     }
 }

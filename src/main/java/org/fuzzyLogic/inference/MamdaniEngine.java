@@ -27,8 +27,8 @@ public class MamdaniEngine implements InferenceEngine {
             double fire = 1.0;
 
             for (FuzzyRule.Condition ant : rule.getConditions().values()) {
-                double μ = fuzzified.get(ant.var() + ":" + ant.set());
-                fire = andOp.apply(fire, μ);
+                double v = fuzzified.get(ant.var() + ":" + ant.set());
+                fire = andOp.apply(fire, v);
             }
 
             fire *= rule.getWeight();
