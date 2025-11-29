@@ -2,20 +2,19 @@ package org.fuzzyLogic.rules;
 
 import java.util.Map;
 
-public class FuzzyRule { // single IF–THEN rule
-
-    public record Condition(String var, String set) {}
-
+public class FuzzyRule { // Represents a single IF–THEN fuzzy rule
+    public record Condition(String var, String set) {} //single condition inside a rule
     private final Map<String, Condition> Conditions;
-    private final String outputSet;
-    private boolean enabled = true;
+    private final String outputSet; //output of fuzzy set (then of the conditions)
+    private boolean enabled = true; // to allow turning rule on and off
+
+    // used in weighted inference (1.0 = normal)
     private double weight = 1.0;
 
-    public FuzzyRule(Map<String, Condition> antecedents, String outputSet) {
-        this.Conditions = antecedents;
+    public FuzzyRule(Map<String, Condition> Conditions, String outputSet) {
+        this.Conditions = Conditions;
         this.outputSet = outputSet;
     }
-
     public boolean isEnabled() {
         return enabled;
     }
