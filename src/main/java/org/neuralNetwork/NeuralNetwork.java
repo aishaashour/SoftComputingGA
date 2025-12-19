@@ -23,9 +23,7 @@ public class NeuralNetwork {
         this.lossFunction = lossFunction;
     }
 
-    /**
-     * Forward Propagation
-     */
+    //Forward Propagation
     public double[][] predict(double[][] input) {
         double[][] output = input;
         for (ILayer layer : layers) {
@@ -34,9 +32,7 @@ public class NeuralNetwork {
         return output;
     }
 
-    /**
-     * Training Loop
-     */
+     //Training Loop
     public void train(double[][] xTrain, double[][] yTrain,
                       int epochs, int batchSize, double learningRate) {
 
