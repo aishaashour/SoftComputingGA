@@ -16,7 +16,7 @@ public class PresentationQualityDemo {
         double[][] xTrain = data.x;
         double[][] yTrain = data.y;
 
-        // Build Neural Network
+        //build Neural Network (intialization)
         NeuralNetwork nn = new NeuralNetwork();
         UniformXavierInitializer initializer = new UniformXavierInitializer();
 
@@ -30,7 +30,7 @@ public class PresentationQualityDemo {
 
         // Train
         nn.train(xTrain, yTrain, 1000, 2, 0.05);
-        // Test Prediction
+
         // testing
         //bad presentation {0.30, 0.75, 0.20, 0.25}
         //average presentation  {0.60, 0.40, 0.55, 0.50}
