@@ -1,6 +1,5 @@
 package org.neuralNetwork;
 
-import org.neuralNetwork.NeuralNetwork;
 import org.neuralNetwork.Layer.DenseLayer;
 import org.neuralNetwork.Activation.RectifiedLinearUnitFunction;
 import org.neuralNetwork.Activation.SigmoidFunction;
