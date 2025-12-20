@@ -32,7 +32,7 @@ public class NeuralNetwork {
         return output;
     }
 
-     //Training Loop
+    //Training Loop
     public void train(double[][] xTrain, double[][] yTrain,
                       int epochs, int batchSize, double learningRate) {
 
@@ -48,14 +48,14 @@ public class NeuralNetwork {
                 double[][] xBatch = slice(xTrain, start, end);
                 double[][] yBatch = slice(yTrain, start, end);
 
-                // Forward
+                //Forward
                 double[][] predictions = predict(xBatch);
 
-                // Loss
+                //Loss
                 totalEpochLoss += lossFunction.computeLoss(predictions, yBatch);
                 batches++;
 
-                // Backward
+                //Backward
                 double[][] gradient = lossFunction.computeGradient(predictions, yBatch);
                 for (int i = layers.size() - 1; i >= 0; i--) {
                     gradient = layers.get(i).backward(gradient, learningRate);
