@@ -6,10 +6,13 @@ import java.util.List;
 import org.neuralNetwork.Layer.ILayer;
 import org.neuralNetwork.Loss.ILoss;
 
+
 public class NeuralNetwork {
 
     private List<ILayer> layers;
     private ILoss lossFunction;
+    private List<Double> lossHistory = new ArrayList<>(); 
+
 
     public NeuralNetwork() {
         this.layers = new ArrayList<>();
@@ -21,6 +24,9 @@ public class NeuralNetwork {
 
     public void setLossFunction(ILoss lossFunction) {
         this.lossFunction = lossFunction;
+    }
+    public List<Double> getLossHistory() {   
+        return lossHistory;
     }
 
     //Forward Propagation
@@ -63,6 +69,7 @@ public class NeuralNetwork {
             }
 
             double avgLoss = totalEpochLoss / batches;
+            lossHistory.add(avgLoss);   
             System.out.println("Epoch " + (epoch + 1) + " | Loss: " + avgLoss);
         }
     }

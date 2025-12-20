@@ -1,9 +1,9 @@
 package org.neuralNetwork;
 
-import org.neuralNetwork.Layer.DenseLayer;
 import org.neuralNetwork.Activation.RectifiedLinearUnitFunction;
 import org.neuralNetwork.Activation.SigmoidFunction;
 import org.neuralNetwork.Initialization.UniformXavierInitializer;
+import org.neuralNetwork.Layer.DenseLayer;
 import org.neuralNetwork.Loss.BinaryCross_EntropyLossFunction;
 
 public class PresentationQualityDemo {
@@ -34,7 +34,9 @@ public class PresentationQualityDemo {
         ANN.setLossFunction(new BinaryCross_EntropyLossFunction());
 
         //train Model
-        ANN.train(xTrain, yTrain, 800, 2, 0.05);
+        ANN.train(xTrain, yTrain, 100, 2, 0.05);
+        LossPlotter.plotLoss(ANN.getLossHistory());
+
 
         //test model
         // =======================
